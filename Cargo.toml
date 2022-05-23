@@ -1,0 +1,13 @@
+[package]
+name = "json2csv"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.57"
+clap = { version = "3.1.18", features = ["derive"] }
+csv = "1.1.6"
+indexmap = { version = "1.8.1", features = ["serde-1"] }
+serde = { version = "1.0.137", default-features = false }
+serde_json = { version = "1.0.81", features = ["preserve_order"] }
+unescape = "0.1.0"
