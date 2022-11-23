@@ -1,5 +1,5 @@
-use std::path::PathBuf;
 use clap::Parser;
+use std::path::PathBuf;
 
 pub fn parse() -> Opts {
     Opts::parse()
@@ -8,12 +8,12 @@ pub fn parse() -> Opts {
 /// Convert JSON data to CSV
 #[derive(Parser, Debug)]
 pub struct Opts {
-    #[clap(short, long, parse(from_os_str), default_value = "/dev/stdin")]
+    #[arg(short, long, default_value = "/dev/stdin")]
     pub input_file: PathBuf,
     /// Where to write output. Defaults to standard output.
-    #[clap(short, long, parse(from_os_str), default_value = "/dev/stdout")]
+    #[arg(short, long, default_value = "/dev/stdout")]
     pub output_file: PathBuf,
-    #[clap(short, long, default_value = ",", parse(try_from_str = unescape_char))]
+    #[arg(short, long, default_value = ",", value_parser = unescape_char)]
     pub delimiter: char,
 }
 
@@ -29,6 +29,6 @@ fn unescape_char(src: &str) -> anyhow::Result<char> {
     let chars: Vec<char> = unescape_chars(src)?.chars().collect();
     match &chars[..] {
         [c] => Ok(c.to_owned()),
-        vec => anyhow::bail!("Needs to be exactly 1 character, not {}", vec.len()),
+        arr => anyhow::bail!("Needs to be exactly 1 character, not {}", arr.len()),
     }
 }
