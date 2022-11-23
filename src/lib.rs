@@ -10,7 +10,6 @@ fn parse_delimiter(d: char) -> anyhow::Result<u8> {
 
 /// Deserializes input as JSON and serializes it to output as CSV
 pub fn json2csv<I: Read>(input: I, delimiter: Option<char>) -> anyhow::Result<Vec<u8>> {
-
     let delimiter = parse_delimiter(delimiter.unwrap_or(','))?;
     let output = Vec::new();
 
@@ -20,7 +19,7 @@ pub fn json2csv<I: Read>(input: I, delimiter: Option<char>) -> anyhow::Result<Ve
 
     let entries: Vec<Map<String, Value>> = serde_json::from_reader(input)?;
 
-    if entries.len() > 0 {
+    if !entries.is_empty() {
         let columns = {
             let r0 = &entries[0];
             r0.keys().collect::<Vec<_>>()
@@ -38,7 +37,7 @@ pub fn json2csv<I: Read>(input: I, delimiter: Option<char>) -> anyhow::Result<Ve
         for entry in entries {
             let mut record = StringRecord::new();
             for value in entry.values() {
-                record.push_field(value.as_str().unwrap());
+                record.push_field(value.as_str().unwrap_or_default());
             }
             writer.write_record(&record)?;
         }
